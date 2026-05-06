@@ -1,0 +1,235 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 920" font-family="Segoe UI, Arial, sans-serif">
+
+  <!-- Background -->
+  <rect width="1100" height="920" fill="#0f172a" rx="12"/>
+
+  <!-- Title -->
+  <text x="550" y="42" text-anchor="middle" fill="#f1f5f9" font-size="20" font-weight="700">Voice-to-Semantic-Search Pipeline</text>
+  <text x="550" y="62" text-anchor="middle" fill="#64748b" font-size="12">Mobile App + API</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- LANE HEADERS                                           -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <!-- Lane: Mobile (Frontend) -->
+  <rect x="20" y="76" width="520" height="24" rx="4" fill="#1e3a5f"/>
+  <text x="280" y="92" text-anchor="middle" fill="#7dd3fc" font-size="12" font-weight="600">MOBILE (Angular / Ionic)</text>
+
+  <!-- Lane: API (Backend) -->
+  <rect x="560" y="76" width="520" height="24" rx="4" fill="#1a3a2f"/>
+  <text x="820" y="92" text-anchor="middle" fill="#6ee7b7" font-size="12" font-weight="600">.NET 8 API + Azure Services</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ROW 1 – RECORDING                                      -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <!-- AudioRecordingService box -->
+  <rect x="30" y="116" width="220" height="100" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+  <text x="140" y="138" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="600">AudioRecordingService</text>
+  <line x1="30" y1="144" x2="250" y2="144" stroke="#334155" stroke-width="1"/>
+  <text x="140" y="160" text-anchor="middle" fill="#cbd5e1" font-size="10">navigator.mediaDevices.getUserMedia</text>
+  <text x="140" y="176" text-anchor="middle" fill="#cbd5e1" font-size="10">MediaRecorder (10 s max)</text>
+  <text x="140" y="192" text-anchor="middle" fill="#64748b" font-size="9">Signals: isRecording · recordingTime · amplitude</text>
+  <text x="140" y="207" text-anchor="middle" fill="#64748b" font-size="9">Output blob: audio/webm (Android) · audio/mp4 (iOS)</text>
+
+  <!-- VoiceTranscriptionService box -->
+  <rect x="280" y="116" width="250" height="100" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+  <text x="405" y="138" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="600">VoiceTranscriptionService</text>
+  <line x1="280" y1="144" x2="530" y2="144" stroke="#334155" stroke-width="1"/>
+  <text x="405" y="160" text-anchor="middle" fill="#cbd5e1" font-size="10">effect(isFinished) → _uploadAndTranscribe()</text>
+  <text x="405" y="176" text-anchor="middle" fill="#64748b" font-size="9">Session ID guards cancel/replace race</text>
+  <text x="405" y="192" text-anchor="middle" fill="#64748b" font-size="9">Signals: isTranscribing · transcript · audioUrl · error</text>
+  <text x="405" y="207" text-anchor="middle" fill="#64748b" font-size="9">Object URL → audio player (WebM/MP4 kept for playback)</text>
+
+  <!-- Arrow: AudioRec → VoiceTranscription -->
+  <line x1="251" y1="166" x2="278" y2="166" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="264" y="162" text-anchor="middle" fill="#64748b" font-size="9">blob</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ROW 2 – WAV CONVERSION                                 -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <!-- WAV Conversion box -->
+  <rect x="155" y="240" width="310" height="90" rx="8" fill="#1c2a1c" stroke="#2d4a2d" stroke-width="1.5"/>
+  <text x="310" y="260" text-anchor="middle" fill="#86efac" font-size="10" font-weight="600">_toWav() — Web Audio API Conversion</text>
+  <line x1="155" y1="266" x2="465" y2="266" stroke="#2d4a2d" stroke-width="1"/>
+  <text x="310" y="282" text-anchor="middle" fill="#cbd5e1" font-size="10">AudioContext.decodeAudioData() → float PCM</text>
+  <text x="310" y="297" text-anchor="middle" fill="#cbd5e1" font-size="10">OfflineAudioContext(1 ch, n samples, 16 kHz) → resample</text>
+  <text x="310" y="312" text-anchor="middle" fill="#cbd5e1" font-size="10">_encodeWav() → RIFF header + 16-bit PCM samples</text>
+  <text x="310" y="324" text-anchor="middle" fill="#64748b" font-size="9">Output: recording.wav  (fallback: raw recording.webm)</text>
+
+  <!-- Arrow down: VoiceTranscription → WAV box -->
+  <line x1="310" y1="217" x2="310" y2="238" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ROW 3 – HTTP UPLOAD                                    -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <!-- HTTP Upload label -->
+  <rect x="155" y="352" width="310" height="52" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+  <text x="310" y="374" text-anchor="middle" fill="#cbd5e1" font-size="10" font-weight="600">POST /api/speech/transcribe</text>
+  <text x="310" y="390" text-anchor="middle" fill="#64748b" font-size="9">FormData { audio: recording.wav }  ·  Bearer JWT  ·  max 10 MB</text>
+  <text x="310" y="402" text-anchor="middle" fill="#64748b" font-size="9">HTTP response: { text: "..." }  or  503 Unavailable</text>
+
+  <!-- Arrow down: WAV → HTTP -->
+  <line x1="310" y1="332" x2="310" y2="350" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Arrow across: HTTP → SpeechController (crosses lane boundary) -->
+  <line x1="466" y1="378" x2="574" y2="378" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arb)"/>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ROW 3 – BACKEND: SPEECH CONTROLLER                     -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <rect x="576" y="352" width="240" height="64" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+  <text x="696" y="372" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="600">SpeechController</text>
+  <line x1="576" y1="378" x2="816" y2="378" stroke="#334155" stroke-width="1"/>
+  <text x="696" y="393" text-anchor="middle" fill="#cbd5e1" font-size="10">POST /api/speech/transcribe</text>
+  <text x="696" y="408" text-anchor="middle" fill="#64748b" font-size="9">IFormFile audio → TranscribeAudioCommand (MediatR)</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ROW 4 – WHISPER TRANSCRIPTION SERVICE                  -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <!-- WhisperTranscriptionService box -->
+  <rect x="576" y="438" width="500" height="130" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+  <text x="826" y="458" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="600">WhisperTranscriptionService</text>
+  <line x1="576" y1="464" x2="1076" y2="464" stroke="#334155" stroke-width="1"/>
+
+  <!-- Provider 1 -->
+  <rect x="590" y="472" width="220" height="84" rx="6" fill="#1c2538" stroke="#2563eb" stroke-width="1"/>
+  <text x="700" y="489" text-anchor="middle" fill="#93c5fd" font-size="10" font-weight="600">Provider 1: Azure OpenAI Whisper</text>
+  <text x="700" y="505" text-anchor="middle" fill="#64748b" font-size="9">Only active when WhisperDeploymentName ≠ ""</text>
+  <text x="700" y="519" text-anchor="middle" fill="#cbd5e1" font-size="9">audioClient.TranscribeAudioAsync(whisperStream, fileName)</text>
+  <text x="700" y="533" text-anchor="middle" fill="#64748b" font-size="9">SDK disposes the stream — uses independent MemoryStream</text>
+  <text x="700" y="547" text-anchor="middle" fill="#64748b" font-size="9">On exception → log + fall through to Provider 2</text>
+
+  <!-- Provider 2 -->
+  <rect x="830" y="472" width="232" height="84" rx="6" fill="#1a2e1a" stroke="#16a34a" stroke-width="1"/>
+  <text x="946" y="489" text-anchor="middle" fill="#86efac" font-size="10" font-weight="600">Provider 2: Azure Speech REST</text>
+  <text x="946" y="505" text-anchor="middle" fill="#cbd5e1" font-size="9">{region}.stt.speech.microsoft.com</text>
+  <text x="946" y="519" text-anchor="middle" fill="#cbd5e1" font-size="9">/speech/recognition/conversation/v1</text>
+  <text x="946" y="533" text-anchor="middle" fill="#cbd5e1" font-size="9">?language=en-US&amp;format=simple</text>
+  <text x="946" y="547" text-anchor="middle" fill="#64748b" font-size="9">Header: Ocp-Apim-Subscription-Key</text>
+
+  <!-- Arrow: SpeechController → WhisperService -->
+  <line x1="696" y1="417" x2="696" y2="436" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Arrow: Provider 1 → Provider 2 (fallback) -->
+  <line x1="812" y1="514" x2="828" y2="514" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arre)"/>
+  <text x="820" y="509" text-anchor="middle" fill="#ef4444" font-size="8">fallback</text>
+
+  <!-- Byte buffer note -->
+  <rect x="590" y="558" width="472" height="18" rx="3" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <text x="826" y="571" text-anchor="middle" fill="#64748b" font-size="9">Stream buffered to byte[] once → independent MemoryStream per provider (prevents SDK stream disposal corruption)</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ROW 5 – SEMANTIC SEARCH                                -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <!-- Transcript result arrow back to frontend -->
+  <line x1="576" y1="503" x2="466" y2="503" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arb)"/>
+  <text x="520" y="497" text-anchor="middle" fill="#93c5fd" font-size="9">{ text }</text>
+
+  <!-- Transcript flows to filter -->
+  <rect x="30" y="482" width="200" height="56" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+  <text x="130" y="502" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="600">Filter Component</text>
+  <line x1="30" y1="508" x2="230" y2="508" stroke="#334155" stroke-width="1"/>
+  <text x="130" y="522" text-anchor="middle" fill="#cbd5e1" font-size="9">effect: transcript → localFilters.semanticQuery</text>
+  <text x="130" y="534" text-anchor="middle" fill="#64748b" font-size="9">apply() → modalCtrl.dismiss(filters, 'confirm')</text>
+
+  <!-- Arrow: response → filter -->
+  <line x1="466" y1="503" x2="232" y2="503" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ROW 6 – SEMANTIC QUERY                                 -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <rect x="30" y="560" width="500" height="56" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+  <text x="280" y="580" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="600">GET /api/personal-receipts?semanticQuery=Find+Rose+Pharmacy</text>
+  <line x1="30" y1="586" x2="530" y2="586" stroke="#334155" stroke-width="1"/>
+  <text x="280" y="600" text-anchor="middle" fill="#64748b" font-size="9">SemanticQueryParser → strips noise words · trailing punctuation · numeric ranges</text>
+  <text x="280" y="612" text-anchor="middle" fill="#64748b" font-size="9">Produces: effectiveSemanticQuery · optional EF amount WHERE clause</text>
+
+  <!-- Arrow down: Filter → Receipts query -->
+  <line x1="130" y1="539" x2="130" y2="558" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ROW 7 – EMBEDDING + SCORING                            -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <!-- Embedding box (backend) -->
+  <rect x="576" y="638" width="230" height="80" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+  <text x="691" y="658" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="600">AzureOpenAIEmbeddingService</text>
+  <line x1="576" y1="664" x2="806" y2="664" stroke="#334155" stroke-width="1"/>
+  <text x="691" y="679" text-anchor="middle" fill="#cbd5e1" font-size="9">text-embedding-3-large (1536 dims)</text>
+  <text x="691" y="692" text-anchor="middle" fill="#cbd5e1" font-size="9">Fallback: BM25Native (EmbeddingsApiUrl = "")</text>
+  <text x="691" y="706" text-anchor="middle" fill="#64748b" font-size="9">Returns float[] queryVector</text>
+
+  <!-- Scoring box -->
+  <rect x="826" y="638" width="250" height="80" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+  <text x="951" y="658" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="600">Merchant-First Scoring</text>
+  <line x1="826" y1="664" x2="1076" y2="664" stroke="#334155" stroke-width="1"/>
+  <text x="951" y="679" text-anchor="middle" fill="#cbd5e1" font-size="9">100% MerchantExact · 98% MerchantWords</text>
+  <text x="951" y="692" text-anchor="middle" fill="#cbd5e1" font-size="9">95% ItemExact · 90% CatExact · 85% Stemmed</text>
+  <text x="951" y="706" text-anchor="middle" fill="#64748b" font-size="9">0–80% Hybrid: cosine×0.7 + BM25×0.3  (≥60% threshold)</text>
+
+  <!-- Arrow: GET query → Embedding -->
+  <line x1="530" y1="616" x2="691" y2="636" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Arrow: Embedding → Scoring -->
+  <line x1="808" y1="678" x2="824" y2="678" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ROW 8 – RESULTS                                        -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <rect x="576" y="742" width="500" height="52" rx="8" fill="#1c2a1c" stroke="#2d4a2d" stroke-width="1.5"/>
+  <text x="826" y="762" text-anchor="middle" fill="#86efac" font-size="10" font-weight="600">PagedResultDto&lt;ReceiptDto&gt;  with MatchPercentage</text>
+  <line x1="576" y1="768" x2="1076" y2="768" stroke="#2d4a2d" stroke-width="1"/>
+  <text x="826" y="783" text-anchor="middle" fill="#64748b" font-size="9">Top 100 matches · paginated · cached 10 min  →  receipt list sorted by MatchPercentage DESC</text>
+
+  <!-- Arrow: Scoring → Results -->
+  <line x1="826" y1="720" x2="826" y2="740" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Arrow: Results → Frontend receipt list -->
+  <line x1="576" y1="768" x2="280" y2="768" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arb)"/>
+
+  <!-- Receipt list box -->
+  <rect x="30" y="742" width="248" height="52" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+  <text x="154" y="762" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="600">Receipts List</text>
+  <line x1="30" y1="768" x2="278" y2="768" stroke="#334155" stroke-width="1"/>
+  <text x="154" y="783" text-anchor="middle" fill="#64748b" font-size="9">Ranked receipts with % badge · user sees results</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- LEGEND                                                 -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <rect x="30" y="820" width="1040" height="80" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="550" y="840" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="600">Key Design Decisions</text>
+
+  <circle cx="50" cy="858" r="4" fill="#3b82f6"/>
+  <text x="60" y="862" fill="#cbd5e1" font-size="10">WAV conversion required: Azure Speech REST rejects WebM/MP4 containers from browser MediaRecorder</text>
+
+  <circle cx="50" cy="876" r="4" fill="#ef4444"/>
+  <text x="60" y="880" fill="#cbd5e1" font-size="10">byte[] buffer pattern: Azure OpenAI SDK disposes Stream after TranscribeAudioAsync — independent MemoryStream per provider prevents cross-corruption</text>
+
+  <circle cx="50" cy="893" r="4" fill="#16a34a"/>
+  <text x="60" y="897" fill="#cbd5e1" font-size="10">Session ID: cancelling a recording increments _sessionId; any in-flight HTTP response arriving after cancel is silently discarded — no stale transcript leaks</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ARROW MARKERS                                          -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#475569"/>
+    </marker>
+    <marker id="arb" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#3b82f6"/>
+    </marker>
+    <marker id="arre" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#ef4444"/>
+    </marker>
+  </defs>
+
+</svg>

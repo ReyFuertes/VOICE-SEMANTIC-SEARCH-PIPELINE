@@ -1,5 +1,11 @@
 # Voice-to-Semantic-Search Pipeline
 
+
+
+https://github.com/user-attachments/assets/75271c9c-5d25-418b-81fc-983eb89e8920
+
+
+
 > **Current implementation** as of commit `b5822d7` and subsequent fixes.  
 > The earlier `azure-speech-voice-input.md` describes the original Capacitor `@capacitor-community/speech-recognition` approach, which was replaced by this pipeline.
 
